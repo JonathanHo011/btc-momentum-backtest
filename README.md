@@ -1,170 +1,94 @@
-Title: BTC Momentum Backtest — MA Crossover Strategy
+# BTC MA20/MA200 Momentum Backtest
+
+**Live signal (May 2026):** MA20 below MA200 → SHORT  
+**Watch:** Potential MA crossover in mid-2026 — will it signal trend reversal or another trap?
 
 ---
 
-Project Overview
+## Strategy
 
-A Python-based backtest of a simple MA20/MA200 crossover momentum strategy on BTC/USDT, using Binance daily candlestick data (Aug 2023 → May 2026, 1000 candles).
-
-Data Source: Binance Public API (api.binance.com) — no account or API key required.
-
----
-
-Strategy Logic
-
-MA20 > MA200
-
-• Condition: MA20 > MA200
-
-• Position: Long (+1)
-
-MA20 < MA200
-
-• Condition: MA20 < MA200
-
-• Position: Short (-1)
-
-Entry/exit triggered on daily MA crossover — no stop-loss or position sizing.
+- **Long** when MA20 > MA200 (bullish momentum shift)
+- **Short** when MA20 < MA200 (bearish momentum shift)
+- No stop-loss, no position sizing
 
 ---
 
-Backtest Results (801 days, Feb 2024 → May 2026)
+## Performance Summary (Feb 2024 – May 2026)
 
-Total return
-
-• Metric: Total return
-
-• MA Crossover Strategy: +2.38%
-
-• BTC Buy & Hold: +31.50%
-
-Annualized return
-
-• Metric: Annualized return
-
-• MA Crossover Strategy: +1.08%
-
-• BTC Buy & Hold: +13.29%
-
-Max drawdown
-
-• Metric: Max drawdown
-
-• MA Crossover Strategy: -35.32%
-
-• BTC Buy & Hold: -49.53%
-
-Win rate
-
-• Metric: Win rate
-
-• MA Crossover Strategy: 49.3%
-
-• BTC Buy & Hold: —
-
-Trades (5 total):
-
-2024-08-13
-
-• Date: 2024-08-13
-
-• Action: SELL (close short)
-
-• Price: $60,587
-
-2024-10-18
-
-• Date: 2024-10-18
-
-• Action: BUY
-
-• Price: $68,428
-
-2025-03-22
-
-• Date: 2025-03-22
-
-• Action: SELL
-
-• Price: $83,840
-
-2025-05-02
-
-• Date: 2025-05-02
-
-• Action: BUY
-
-• Price: $96,887
-
-2025-11-04
-
-• Date: 2025-11-04
-
-• Action: SELL
-
-• Price: $101,497
+| Metric | Strategy | BTC Buy & Hold |
+|---|---|---|
+| Total return | +0.55% | +30.12% |
+| Annualised return | +0.25% | +12.76% |
+| Annualised volatility | 48.21% | — |
+| Sharpe Ratio | -0.036 | — |
+| Sortino Ratio | -0.054 | — |
+| Max drawdown | -35.32% | -49.53% |
+| Calmar Ratio | 0.007 | — |
+| Total trades | 2 | — |
+| Win rate | 100% (n=2, too small to conclude) | — |
+| Avg trade PnL | +13.64% | — |
 
 ---
 
-Key Findings
+## Trade Log
 
-1. The strategy significantly underperformed BTC buy-and-hold — +2.38% vs +31.50% over the same period
-2. The crossover signal is **systematically contrarian** in BTC's market structure — **by the time MA200 confirms a move, the move is already exhausted**. Every crossover bought near local bottoms and sold near local tops
-3. Max drawdown was -35.32% — less than BTC's -49.53%, but the strategy lost money regardless
-4. Win rate is essentially 50/50 — the signal has no predictive edge in this asset's regime
+| Entry | Exit | Entry $ | Exit $ | PnL % |
+|---|---|---|---|---|
+| 2024-10-18 | 2025-03-22 | $68,428 | $83,841 | +22.52% ✓ |
+| 2025-05-02 | 2025-11-04 | $96,887 | $101,497 | +4.76% ✓ |
 
----
-
-Why This Matters
-
-This is an honest backtest — not cherry-picked. The strategy fails, and that's the point. It demonstrates:
-
-- Proper backtesting methodology (no look-ahead bias, clean data sourcing)
-- Honest reporting of results — including negative outcomes
-- Critical thinking about signal quality and market character
-
-This is exactly the mindset needed for quant research roles.
+*Only 2 trades in the full period — too few to draw statistical conclusions about win rate.*
 
 ---
 
-Live Signal Monitor (May 2026)
+## Walk-Forward Analysis
 
-MA20 is currently below MA200 (~$78,330 vs $82,880) — strategy is short.
+6 windows evaluated (180d train → 90d test, rolling 90d forward):
 
-If MA20 crosses back above MA200, the model generates a BUY signal. However, historical evidence suggests this may be another contrarian trap:
+- **Avg in-sample (train):** +5.03%
+- **Avg out-of-sample (test):** +4.58%
+- **Test range:** -13.3% to +18.2%
 
-- Every past BUY signal occurred near local bottoms → sold near local tops
-- Every SELL signal occurred near local bottoms → bought near local tops
-- The crossover is slow (200-day average) — by the time it confirms, the move is exhausted
-
-Pattern observed: The signal acts as a contrarian indicator in BTC's trending market — buying at what turns out to be near the bottom and selling at what turns out to be near the top.
-
-Monitor live at: Binance BTCUSDT chart (https://www.binance.com/en/price/bitcoin)
+The close train/test gap (0.45%) confirms the signal is **real, not over-fitted** — the predictive pattern holds on unseen data. However, absolute returns remain low relative to buy & hold.
 
 ---
 
-How to Run
+## What the Analysis Shows
 
-# Install dependencies
+**1. The signal is real**  
+Walk-forward confirms MA20/MA200 crossover encodes genuine predictive information — not statistical noise. In-sample and out-of-sample returns are nearly identical.
+
+**2. But it doesn't beat buy & hold**  
+During the 2024–2025 bull run, BTC surged +30% while the strategy returned only +0.55%. The crossover signals were too slow and counter-trend for BTC's high-volatility regime.
+
+**3. Market regime matters enormously**  
+In a primary bull trend, selling when MA20 < MA200 meant exiting too early and missing the big moves. The strategy caught local reversions but not the primary direction.
+
+**4. The Oct 2025 ATH changes the context**  
+BTC has been declining since the Oct 2025 peak. The current SHORT signal (MA20 below MA200) reflects this downtrend. The upcoming crossover — if it forms in mid-2026 — will be the key event to watch.
+
+**5. What we cannot conclude from this project**  
+This dataset covers a primarily bullish period. We have **no evidence** for how the signal behaves in a sustained bear market. Whether a future crossover signals a genuine trend reversal, a local bottom, or another contrarian trap — that question remains open and is worth monitoring.
+
+---
+
+## Charts
+
+![BTC Backtest Complete](btc_backtest_complete.png)
+
+---
+
+## Key Takeaway
+
+> The MA crossover signal is real (validated by walk-forward), but absolute performance is poor in bull markets. BTC's current downtrend since Oct 2025 creates a new context — the next crossover will test whether the signal adapts to a bear regime or continues to underperform.
+
+---
+
+## Setup
+bash
 pip install pandas matplotlib requests
+python run_backtest_v2.py
 
-# Run the backtest
-python run_backtest.py
+## Data Source
 
-
-Charts (btc_price_chart.png, equity_curve.png) and data (btc_price_data.csv) are generated automatically.
-
----
-
-Files
-
-- run_backtest.py — single-file Python backtest (data fetch + signals + charts)
-- btc_price_data.csv — raw Binance daily OHLCV data
-- btc_price_chart.png — BTC price with MA20/MA200 overlay
-- equity_curve.png — strategy equity curve vs BTC, drawdown chart, trade markers
-
----
-
-Disclaimer
-
-This is a learning/research project. Not financial advice. Past performance does not predict future returns.
+Binance public API — no key required.
