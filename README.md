@@ -85,9 +85,9 @@ This dataset covers a primarily bullish period. We have **no evidence** for how 
 ---
 
 ## Setup
-bash
-pip install pandas matplotlib requests
-python run_backtest_v2.py
+- bash
+- pip install pandas matplotlib requests
+- python run_backtest_v2.py
 
 ## Data Source
 
