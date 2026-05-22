@@ -1,7 +1,7 @@
 # BTC MA20/MA200 Momentum Backtest — v3
 
 **Live signal (May 22, 2026):** MA20 below MA200 → **FLAT**  
-**BTC:** ~$77,457 | **Position:** Cash since Aug 25, 2025 trailing stop exit  
+**BTC:** ~$77,452 | **Position:** Cash since Aug 25, 2025 trailing stop exit  
 **Watch:** Monitoring for golden cross
 
 ---
@@ -10,26 +10,39 @@
 
 Two methods, same MA crossover entries, same data — only the exit logic differs. The gap is decisive:
 
-### Performance Comparison (Mar 8, 2024 → May 22, 2026)
+### Performance Comparison (Mar 13, 2024 → May 22, 2026)
 
 | Strategy | Total Return | Max Drawdown | Sharpe |
 |---|---|---|---|
 | **v3: MA + 10% Trail (FLAT)** 🔥 | **+58.09%** | **-12.73%** | **+1.062** |
-| v2: MA xover (SHORT) | -4.87% | -35.32% | +0.148 |
-| Buy & Hold | +13.70% | -49.53% | +0.318 |
-
-**The short method loses money.** Despite two profitable long trades (+22.5% and +4.8% each), being forced short between them gave back the gains:
-
-```
-Mar 22 – May 2, 2025    SHORT during +15% BTC rally    → -15% loss
-Nov 4 – May 22, 2026    SHORT during choppy downtrend   → volatility drag erosion
-```
-
-Going to cash eliminates this. v3 stays flat between trades and uses a 10% trailing stop to exit — Sharpe above 1.0 for the first time.
+| v2: MA xover (SHORT) | -11.31% | -35.32% | +0.148 |
+| Buy & Hold | +5.99% | -49.53% | +0.318 |
 
 ---
 
-## v3 Trade Log
+## Why Shorting Fails (v2 Breakdown)
+
+| Period | Position | BTC Move | Strategy Effect |
+|---|---|---|---|
+| Mar 13 – Oct 17, 2024 | Mostly LONG | $73K → $67K (-7.7%) | **-27.93%** — volatility drag in choppy drift-down |
+| Oct 18 – Mar 22, 2025 | LONG (Trade 1) | $68K → $84K (+22.5%) | **+20.70%** ✅ |
+| Mar 23 – May 1, 2025 | SHORT | $86K → $96K (+12.1%) | **-15.49%** — forced short during counter-trend rally |
+| May 2 – Nov 4, 2025 | LONG (Trade 2) | $97K → $101K (+4.8%) | **+4.33%** ✅ |
+| Nov 5 – May 22, 2026 | SHORT | $104K → $77K (-25.4%) | **+15.65%** ✅ |
+
+Both long trades were profitable (+20.7%, +4.3%), and the post-Nov 2025 short was profitable (+15.7%). But the two loss periods were catastrophic enough to produce an overall **-11.31%** loss vs **+5.99%** buy & hold.
+
+The worst offender was Mar–Oct 2024: BTC only drifted down -7.7%, but being long through 7 months of choppy sideways action produced -27.9% strategy loss through daily compounding and volatility drag.
+
+---
+
+## v3 Fix: Trailing Stop + Cash
+
+v3 eliminates both problems:
+- **No shorting** — stays flat when MA20 < MA200 rather than going short
+- **10% trailing stop** — exits early rather than riding drawdowns
+
+### v3 Trade Log
 
 | Date | Action | Price | PnL | Exit Reason |
 |------|--------|-------|-----|-------------|
@@ -67,7 +80,7 @@ The trailing stop ratchets UP only — never down.
 | Version | Date | Key Change | Return | MaxDD | Sharpe | Verdict |
 |---------|------|-----------|--------|-------|--------|---------|
 | **v3** | May 22, 2026 | 10% trailing stop + FLAT (no shorting) | **+58.09%** | **-12.73%** | **+1.062** | ✅ Best |
-| v2 | May 11, 2026 | Walk-forward + full metrics (SHORT) | -4.87% | -35.32% | +0.148 | ❌ Shorting fails |
+| v2 | May 11, 2026 | Walk-forward + full metrics (SHORT) | -11.31% | -35.32% | +0.148 | ❌ Shorting fails |
 | v1 | May 9, 2026 | Initial MA crossover (SHORT) | +0.55% | -35.32% | -0.036 | 🏁 Baseline |
 
 ---
