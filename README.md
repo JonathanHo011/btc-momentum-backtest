@@ -8,7 +8,7 @@
 
 ## Core Finding: Shorting Destroys Returns
 
-Two methods, same MA crossover entries, same data — only the exit logic differs. The gap is decisive:
+Two methods, same MA crossover entries, same data — only the exit logic differs:
 
 ### Performance Comparison (Mar 13, 2024 → May 22, 2026)
 
@@ -32,7 +32,21 @@ Two methods, same MA crossover entries, same data — only the exit logic differ
 
 Both long trades were profitable (+20.7%, +4.3%), and the post-Nov 2025 short was profitable (+15.7%). But the two loss periods were catastrophic enough to produce an overall **-11.31%** loss vs **+5.99%** buy & hold.
 
-The worst offender was Mar–Oct 2024: BTC only drifted down -7.7%, but being long through 7 months of choppy sideways action produced -27.9% strategy loss through daily compounding and volatility drag.
+**Worst offender — Mar–Oct 2024:** BTC drifted down -7.7%, but the strategy lost -27.9%. MA20 stayed above MA200 the whole time (position = LONG), while BTC slowly bled from $73K to $67K through 7 months of choppy sideways action. The daily compounding of small losses in a volatile drift-down destroyed more value than BTC's net decline.
+
+### Why the MA200 Couldn't React — Structural Lag
+
+The MA200 crossover strategy failed to exit in Mar–Oct 2024 because of inherent MA200 lag:
+
+```
+Mar 2024:  MA20 ≈ $68K  >  MA200 ≈ $44K  — massive gap
+           MA200 still averaging prices from Sep 2023 ($25K)
+
+By Aug:    MA20 ≈ $62K  ≈  MA200 ≈ $62K  — finally met
+           Death cross on Aug 13, 2024
+```
+
+The MA200 was weighed down by sub-$30K prices from late 2023 — taking 200 days for those low prices to roll off. During those 200 days, BTC drifted from $73K → $67K while the signal stubbornly said "LONG" because the MA200 was too slow to reflect the new reality. This structural lag is why the trailing stop was such a large improvement — it exits based on price action rather than waiting for a 200-day average to confirm what happened months ago.
 
 ---
 
@@ -40,7 +54,7 @@ The worst offender was Mar–Oct 2024: BTC only drifted down -7.7%, but being lo
 
 v3 eliminates both problems:
 - **No shorting** — stays flat when MA20 < MA200 rather than going short
-- **10% trailing stop** — exits early rather than riding drawdowns
+- **10% trailing stop** — exits early based on price action rather than MA cross
 
 ### v3 Trade Log
 
@@ -88,6 +102,18 @@ The trailing stop ratchets UP only — never down.
 ## Related: CVD Backtest (Separate Repo)
 
 CVD was tested as both entry and exit filter across 3 versions — [btc-cvd-backtest](https://github.com/JonathanHo011/btc-cvd-backtest). Rejected for daily spot BTC.
+
+---
+
+## Files
+
+| File | Description |
+|------|-------------|
+| `run_backtest_v3.py` | Current (v3) — trailing stop + flat, includes v2 comparison |
+| `run_backtest_v2.py` | Historical — original MA crossover with walk-forward |
+| `btc_backtest_v3.png` | v3 chart output |
+| `btc_backtest_complete.png` | v2 chart output (historical) |
+| `btc_price_data.csv` | Latest Binance data |
 
 ---
 
