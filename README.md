@@ -6,15 +6,26 @@
 
 ---
 
-## Performance Comparison
+## Core Finding: Shorting Destroys Returns
+
+Two methods, same MA crossover entries, same data — only the exit logic differs. The gap is decisive:
+
+### Performance Comparison (Mar 8, 2024 → May 22, 2026)
 
 | Strategy | Total Return | Max Drawdown | Sharpe |
 |---|---|---|---|
-| **v3: MA + 10% Trail (FLAT)** 🔥 | **+58.09%** | **-12.73%** | **+1.012** |
-| v2: MA xover (SHORT) | -41.81% | -58.56% | -0.271 |
-| Buy & Hold | +75.32% | -49.53% | +0.689 |
+| **v3: MA + 10% Trail (FLAT)** 🔥 | **+58.09%** | **-12.73%** | **+1.062** |
+| v2: MA xover (SHORT) | -4.87% | -35.32% | +0.148 |
+| Buy & Hold | +13.70% | -49.53% | +0.318 |
 
-**Key change from v2:** When MA20 < MA200, stays FLAT (cash) instead of going SHORT. Exiting to cash removes the whipsaw risk that destroyed v2's returns.
+**The short method loses money.** Despite two profitable long trades (+22.5% and +4.8% each), being forced short between them gave back the gains:
+
+```
+Mar 22 – May 2, 2025    SHORT during +15% BTC rally    → -15% loss
+Nov 4 – May 22, 2026    SHORT during choppy downtrend   → volatility drag erosion
+```
+
+Going to cash eliminates this. v3 stays flat between trades and uses a 10% trailing stop to exit — Sharpe above 1.0 for the first time.
 
 ---
 
@@ -27,27 +38,11 @@
 | 2025-05-02 | BUY | $96,887 | — | Golden cross |
 | 2025-08-25 | SELL | $110,112 | **+13.65%** | Trailing stop (10%) |
 
-Both exits were trailing stop breaches — the MA death cross never fired. The trailing stop exited 2-3 months earlier than the death cross would have.
+Both exits triggered by the trailing stop — the MA death cross never fired.
 
 ---
 
-## Why v2's Short Method Failed
-
-```
-Period                    Position   BTC moved           Effect
-─────────────────────────────────────────────────────────────────────────
-Mar 13 – Oct 18, 2024     SHORT      $73K → $68K (-7%)  GAIN (+7%)
-Oct 18 – Mar 22, 2025     LONG       $68K → $84K (+23%) GAIN (+22.5%)
-Mar 22 – May 2, 2025      SHORT      $84K → $97K (+15%) LOSS (-15%)  ← KILLER
-May 2 – Nov 4, 2025       LONG       $97K → $101K (+5%) GAIN (+4.8%)
-Nov 4 – May 22, 2026      SHORT      $101K → $77K (-24%) GAIN (+24%)
-```
-
-Being short during the March→May 2025 counter-trend rally (-15%) followed by daily compounding erosion through chop produced -42% total return. v3 fixes this by staying flat instead of shorting — the strategy only profits when the signal is clearly bullish.
-
----
-
-## Strategy Logic (v3)
+## Strategy Logic (v3 — Current)
 
 ```
 Entry:  MA20 crosses ABOVE MA200 → BUY (golden cross)
@@ -61,9 +56,25 @@ The trailing stop ratchets UP only — never down.
 
 ---
 
+## Charts
+
+![BTC Backtest v3](btc_backtest_v3.png)
+
+---
+
+## Version History
+
+| Version | Date | Key Change | Return | MaxDD | Sharpe | Verdict |
+|---------|------|-----------|--------|-------|--------|---------|
+| **v3** | May 22, 2026 | 10% trailing stop + FLAT (no shorting) | **+58.09%** | **-12.73%** | **+1.062** | ✅ Best |
+| v2 | May 11, 2026 | Walk-forward + full metrics (SHORT) | -4.87% | -35.32% | +0.148 | ❌ Shorting fails |
+| v1 | May 9, 2026 | Initial MA crossover (SHORT) | +0.55% | -35.32% | -0.036 | 🏁 Baseline |
+
+---
+
 ## Related: CVD Backtest (Separate Repo)
 
-CVD (Cumulative Volume Delta) was tested as entry and exit filter in a separate repo: [btc-cvd-backtest](https://github.com/JonathanHo011/btc-cvd-backtest). Both uses were **rejected** for daily spot BTC — documented with full postmortem.
+CVD was tested as both entry and exit filter across 3 versions — [btc-cvd-backtest](https://github.com/JonathanHo011/btc-cvd-backtest). Rejected for daily spot BTC.
 
 ---
 
@@ -76,14 +87,4 @@ python run_backtest_v3.py
 
 ## Data Source
 
-Binance public API — no key required. Forward fetch with deduplication.
-
----
-
-## Version History
-
-| Version | Date | Key Change | Return | MaxDD | Sharpe |
-|---------|------|-----------|--------|-------|--------|
-| **v3** | May 22, 2026 | 10% trailing stop + FLAT (no shorting) | **+58.09%** | **-12.73%** | **+1.012** |
-| v2 | May 11, 2026 | Walk-forward + full metrics | +0.55% | -35.32% | -0.036 |
-| v1 | May 9, 2026 | Initial MA crossover | +0.55% | -35.32% | -0.036 |
+Binance public API — no key required.
