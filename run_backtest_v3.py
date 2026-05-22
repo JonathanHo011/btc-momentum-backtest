@@ -85,6 +85,9 @@ BACKTEST_START = "2024-01-01"
 start_idx = df[df["dt"] >= pd.to_datetime(BACKTEST_START)].index[0]
 
 btc_only = df.iloc[start_idx:].copy().reset_index(drop=True)
+
+# Filter to where MA200 is valid — same as original v2 logic
+btc_only = btc_only[btc_only["ma200"].notna()].copy().reset_index(drop=True)
 btc_only["signal"] = (btc_only["ma20"] > btc_only["ma200"]).astype(int)
 btc_only["position"] = btc_only["signal"].replace(0, -1)  # 1=long, -1=short
 btc_only["daily_return"] = btc_only["close"].pct_change().fillna(0)
