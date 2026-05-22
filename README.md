@@ -99,30 +99,6 @@ The trailing stop ratchets UP only — never down.
 
 ---
 
-## BTC vs Gold (PAXG) Correlation — May 2026 Update
-
-BTC vs PAXG (1 PAXG ≈ 1 troy oz physical gold) on Binance daily data (Aug 2023 → May 2026).
-
-### By Regime
-
-| Regime | Days | BTC | PAXG | Price Corr | Return Corr |
-|---|---|---|---|---|---|
-| **Pre-ATH Rally** (→ Oct 6, 2025) | 772 | +377.6% | +109.8% | **+0.909** | +0.070 |
-| **Post-ATH Drawdown** (Oct 7 → Apr 9, 2026) | 186 | -39.9% | +18.3% | **-0.752** | +0.297 |
-| **Post-Ceasefire** (Apr 10 → May 22, 2026) | 42 | +5.9% | -4.5% | -0.206 | +0.389 |
-
-### Key Findings
-
-**Regime 1 — Pre-ATH Rally:** BTC and gold moved together (+0.909 price correlation). Both were running on the same macro driver — loose monetary policy, ETF inflows, global liquidity. This is the "everything rally" regime.
-
-**Regime 2 — Post-ATH Drawdown:** BTC crashed -40% while gold gained +18%. The correlation flipped to **-0.752** — they moved in opposite directions. This is the clearest evidence yet that BTC is NOT "digital gold" during a crisis: BTC behaved like a risk asset, gold behaved like a safe haven.
-
-**Regime 3 — Post-Ceasefire (NEW, 42 days):** BTC +5.9% while PAXG -4.5% — classic **risk-on recovery**. BTC and gold are diverging again as appetite returns to risk assets. Return correlation of +0.389 means they still share some macro sensitivity day-to-day, but the direction of travel is opposite. This is NOT an inflation hedge signal — gold falling while BTC rises is the "risk appetite returning" trade.
-
-**Full period conclusion:** BTC's relationship with gold is regime-dependent. They rally together in risk-on (+0.91), diverge violently in risk-off (-0.75), and diverge again in recovery (-0.21). The "BTC as digital gold" thesis only holds during synchronized macro rallies — it fails completely during drawdowns.
-
----
-
 ## Related: CVD Backtest (Separate Repo)
 
 CVD was tested as both entry and exit filter across 3 versions — [btc-cvd-backtest](https://github.com/JonathanHo011/btc-cvd-backtest). Rejected for daily spot BTC.
@@ -135,7 +111,6 @@ CVD was tested as both entry and exit filter across 3 versions — [btc-cvd-back
 |------|-------------|
 | `run_backtest_v3.py` | Current (v3) — trailing stop + flat, includes v2 comparison |
 | `run_backtest_v2.py` | Historical — original MA crossover with walk-forward |
-| `btc_gold_corr.py` | BTC vs PAXG correlation by regime |
 | `btc_backtest_v3.png` | v3 chart output |
 | `btc_backtest_complete.png` | v2 chart output (historical) |
 | `btc_price_data.csv` | Latest Binance data |
